@@ -3,6 +3,7 @@ module App.View exposing (view)
 import Html exposing (Html, div, li, text, button)
 import Html.Events exposing (onClick)
 import Html.Keyed exposing (ul)
+import Html.Lazy exposing (lazy)
 import App.Model exposing (Model, Item, Filter(..), Status(..))
 import App.Update exposing (Msg(..))
 import App.Selectors exposing (..)
@@ -46,19 +47,21 @@ viewFilter model =
 
 
 viewItems : Model -> Html Msg
-viewItems model =
-    let
-        items =
-            selectVisibleItemsSortedByName model
-    in
-        ul [] <|
-            List.map
-                (\item ->
-                    ( toString item.id
-                    , viewItem item
-                    )
-                )
-                items
+viewItems =
+    lazy <|
+        \model ->
+            let
+                items =
+                    selectVisibleItemsSortedByName model
+            in
+                ul [] <|
+                    List.map
+                        (\item ->
+                            ( toString item.id
+                            , viewItem item
+                            )
+                        )
+                        items
 
 
 viewItem : Item -> Html Msg
